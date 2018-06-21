@@ -43,13 +43,13 @@ unix {
 }
 
 win32 {
-    INCLUDEPATH +=  ./prebuild/live555/include/ \
-                    ./prebuild/live555/include/liveMedia \
-                    ./prebuild/live555/include/groupsock \
-                    ./prebuild/live555/include/UsageEnvironment \
-                    ./prebuild/live555/include/BasicUsageEnvironment
+    INCLUDEPATH +=  $$PWD/prebuild/live555/include/ \
+                    $$PWD/prebuild/live555/include/liveMedia \
+                    $$PWD/prebuild/live555/include/groupsock \
+                    $$PWD/prebuild/live555/include/UsageEnvironment \
+                    $$PWD/prebuild/live555/include/BasicUsageEnvironment
 
-    INCLUDEPATH += ./prebuild/ffmpeg/include/
+    INCLUDEPATH += $$PWD/prebuild/ffmpeg/include/
 
     LIBS += -L$$PWD/prebuild/ffmpeg/lib -lavcodec -lavformat -lavutil -lavfilter \
                                         -lavdevice -lswscale -lswresample
