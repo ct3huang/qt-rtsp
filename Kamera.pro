@@ -43,18 +43,18 @@ unix {
 }
 
 win32 {
-    INCLUDEPATH +=  $$PWD/prebuild/live555/include/ \
-                    $$PWD/prebuild/live555/include/liveMedia \
-                    $$PWD/prebuild/live555/include/groupsock \
-                    $$PWD/prebuild/live555/include/UsageEnvironment \
-                    $$PWD/prebuild/live555/include/BasicUsageEnvironment
+    INCLUDEPATH +=  $$PWD/prebuild/win32/live555/include/ \
+                    $$PWD/prebuild/win32/live555/include/liveMedia \
+                    $$PWD/prebuild/win32/live555/include/groupsock \
+                    $$PWD/prebuild/win32/live555/include/UsageEnvironment \
+                    $$PWD/prebuild/win32/live555/include/BasicUsageEnvironment
 
-    INCLUDEPATH += $$PWD/prebuild/ffmpeg/include/
+    INCLUDEPATH += $$PWD/prebuild/win32/ffmpeg/include/
 
-    LIBS += -L$$PWD/prebuild/ffmpeg/lib -lavcodec -lavformat -lavutil -lavfilter \
+    LIBS += -L$$PWD/prebuild/win32/ffmpeg/lib -lavcodec -lavformat -lavutil -lavfilter \
                                         -lavdevice -lswscale -lswresample
 
-    LIBS += -L$$PWD/prebuild/live555/lib -lliveMedia -lgroupsock \
+    LIBS += -L$$PWD/prebuild/win32/live555/lib -lliveMedia -lgroupsock \
                                          -lBasicUsageEnvironment -lUsageEnvironment
 }
 
