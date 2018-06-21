@@ -9,13 +9,13 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    dummy_sink.cpp \
-    stream_state.cpp \
-    app_window.cpp \
-    rtsp_client.cpp \
-    rtsp_callback.cpp \
-    rtsp_session.cpp
+SOURCES +=  main.cpp \
+            DummySink.cpp \
+            StreamState.cpp \
+            AppWindow.cpp \
+            RtspClient.cpp \
+            RtspCallback.cpp \
+            RtspSession.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -27,22 +27,40 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-INCLUDEPATH += /usr/local/include
-INCLUDEPATH += /usr/local/include/liveMedia
-INCLUDEPATH += /usr/local/include/groupsock
-INCLUDEPATH += /usr/local/include/UsageEnvironment
-INCLUDEPATH += /usr/local/include/BasicUsageEnvironment
-LIBS += -L/usr/local/lib
-LIBS += -lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment
-LIBS += -lavcodec -lavformat -lavutil -lavfilter -lavdevice -lswscale -lswresample
-LIBS += -liconv -lx264 -lbz2 -lz -lm
-LIBS += -framework AudioToolbox -framework CoreMedia -framework AVFoundation -framework VideoToolbox -framework CoreVideo -framework CoreFoundation
-LIBS += -framework Security -framework VideoDecodeAcceleration
 
-HEADERS += \
-    stream_state.h \
-    dummy_sink.h \
-    app_window.h \
-    rtsp_client.h \
-    rtsp_callback.h \
-    rtsp_session.h
+unix {
+    INCLUDEPATH += /usr/local/include
+    INCLUDEPATH += /usr/local/include/liveMedia
+    INCLUDEPATH += /usr/local/include/groupsock
+    INCLUDEPATH += /usr/local/include/UsageEnvironment
+    INCLUDEPATH += /usr/local/include/BasicUsageEnvironment
+    LIBS += -L/usr/local/lib
+    LIBS += -lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment
+    LIBS += -lavcodec -lavformat -lavutil -lavfilter -lavdevice -lswscale -lswresample
+    LIBS += -liconv -lx264 -lbz2 -lz -lm
+    LIBS += -framework AudioToolbox -framework CoreMedia -framework AVFoundation -framework VideoToolbox -framework CoreVideo -framework CoreFoundation
+    LIBS += -framework Security -framework VideoDecodeAcceleration
+}
+
+win32 {
+    INCLUDEPATH +=  ./prebuild/live555/include/ \
+                    ./prebuild/live555/include/liveMedia \
+                    ./prebuild/live555/include/groupsock \
+                    ./prebuild/live555/include/UsageEnvironment \
+                    ./prebuild/live555/include/BasicUsageEnvironment
+
+    INCLUDEPATH += ./prebuild/ffmpeg/include/
+
+    LIBS += -L$$PWD/prebuild/ffmpeg/lib -lavcodec -lavformat -lavutil -lavfilter \
+                                        -lavdevice -lswscale -lswresample
+
+    LIBS += -L$$PWD/prebuild/live555/lib -lliveMedia -lgroupsock \
+                                         -lBasicUsageEnvironment -lUsageEnvironment
+}
+
+HEADERS +=  StreamState.h \
+            DummySink.h \
+            AppWindow.h \
+            RtspClient.h \
+            RtspCallback.h \
+            RtspSession.h

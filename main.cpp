@@ -3,15 +3,26 @@
 
 #include <QApplication>
 
-#include "app_window.h"
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libavutil/mathematics.h>
+#include <libswscale/swscale.h>
+}
 
-#include "rtsp_client.h"
-#include "dummy_sink.h"
-#include "stream_state.h"
+#include "AppWindow.h"
 
-int main(int argc, char** argv) {
+#include "RtspClient.h"
+#include "DummySink.h"
+#include "StreamState.h"
+
+
+
+int main(int argc, char** argv)
+{
     avcodec_register_all();
     av_register_all();
+
     QApplication app(argc, argv);
     AppWindow win(argv[0]);
     win.show();
