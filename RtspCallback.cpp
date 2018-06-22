@@ -37,7 +37,7 @@ void continueAfterDESCRIBE(RTSPClient* rtspClient, int resultCode, char* resultS
         // Create a media session object from this SDP description:
         scs.session = MediaSession::createNew(env, sdpDescription);
         delete[] sdpDescription; // because we don't need it anymore
-        if (scs.session == NULL) {
+        if (scs.session == nullptr) {
             env << *rtspClient << "Failed to create a MediaSession object from the SDP description: " << env.getResultMsg() << "\n";
             break;
         } else if (!scs.session->hasSubsessions()) {
@@ -77,12 +77,12 @@ void continueAfterSETUP(RTSPClient* rtspClient, int resultCode, char* resultStri
         env << ")\n";
 
         const char *sprop = streamClientState.subsession->fmtp_spropparametersets();
-        uint8_t const* sps = NULL;
+        uint8_t const* sps = nullptr;
         unsigned spsSize = 0;
-        uint8_t const* pps = NULL;
+        uint8_t const* pps = nullptr;
         unsigned ppsSize = 0;
 
-        if (sprop != NULL) {
+        if (sprop != nullptr) {
             unsigned numSPropRecords;
             SPropRecord* sPropRecords = parseSPropParameterSets(sprop, numSPropRecords);
             for (unsigned i = 0; i < numSPropRecords; ++i) {
@@ -104,7 +104,7 @@ void continueAfterSETUP(RTSPClient* rtspClient, int resultCode, char* resultStri
 
         streamClientState.subsession->sink = DummySink::createNew(((CustomRTSPClient*)rtspClient)->getSession(), env, *streamClientState.subsession, rtspClient->url());
         // perhaps use your own custom "MediaSink" subclass instead
-        if (streamClientState.subsession->sink == NULL) {
+        if (streamClientState.subsession->sink == nullptr) {
             env << *rtspClient << "Failed to create a data sink for the \"" << *streamClientState.subsession
                 << "\" subsession: " << env.getResultMsg() << "\n";
             break;
@@ -113,11 +113,10 @@ void continueAfterSETUP(RTSPClient* rtspClient, int resultCode, char* resultStri
         env << *rtspClient << "Created a data sink for the \"" << *streamClientState.subsession << "\" subsession\n";
         streamClientState.subsession->miscPtr = rtspClient; // a hack to let subsession handler functions get the "RTSPClient" from the subsession
 
-
-        if (sps != NULL) {
+        if (sps != nullptr) {
             ((DummySink *)streamClientState.subsession->sink)->setSprop(sps, spsSize);
         }
-        if (pps != NULL) {
+        if (pps != nullptr) {
             ((DummySink *)streamClientState.subsession->sink)->setSprop(pps, ppsSize);
         }
 
@@ -128,7 +127,6 @@ void continueAfterSETUP(RTSPClient* rtspClient, int resultCode, char* resultStri
         if (streamClientState.subsession->rtcpInstance() != NULL) {
             streamClientState.subsession->rtcpInstance()->setByeHandler(subsessionByeHandler, streamClientState.subsession);
         }
-
     } while (0);
     delete[] resultString;
 
@@ -186,7 +184,7 @@ void setupNextSubsession(RTSPClient* rtspClient)
     StreamClientState& scs = ((CustomRTSPClient*)rtspClient)->getStreamClientState(); // alias
 
     scs.subsession = scs.iter->next();
-    if (scs.subsession != NULL) {
+    if (scs.subsession != nullptr) {
         if (!scs.subsession->initiate()) {
             env << *rtspClient << "Failed to initiate the \"" << *scs.subsession << "\" subsession: " << env.getResultMsg() << "\n";
             setupNextSubsession(rtspClient); // give up on this subsession; go to the next one
@@ -206,7 +204,7 @@ void setupNextSubsession(RTSPClient* rtspClient)
     }
 
     // We've finished setting up all of the subsessions.  Now, send a RTSP "PLAY" command to start the streaming:
-    if (scs.session->absStartTime() != NULL) {
+    if (scs.session->absStartTime() != nullptr) {
         // Special case: The stream is indexed by 'absolute' time, so send an appropriate "PLAY" command:
         rtspClient->sendPlayCommand(*scs.session, continueAfterPLAY, scs.session->absStartTime(), scs.session->absEndTime());
     } else {
@@ -224,17 +222,20 @@ void subsessionAfterPlaying(void* clientData)
 
     // Begin by closing this subsession's stream:
     Medium::close(subsession->sink);
-    subsession->sink = NULL;
+    subsession->sink = nullptr;
 
     // Next, check whether *all* subsessions' streams have now been closed:
     MediaSession& session = subsession->parentSession();
     MediaSubsessionIterator iter(session);
-    while ((subsession = iter.next()) != NULL) {
-        if (subsession->sink != NULL) return; // this subsession is still active
+    while ((subsession = iter.next()) != nullptr) {
+        if (subsession->sink != nullptr)
+            return; // this subsession is still active
     }
 
     // All subsessions' streams have now been closed, so shutdown the client:
     shutdownStream(rtspClient);
+
+    return;
 }
 
 void subsessionByeHandler(void* clientData)
@@ -254,7 +255,7 @@ void streamTimerHandler(void* clientData)
     CustomRTSPClient* rtspClient = (CustomRTSPClient*)clientData;
     StreamClientState& scs = rtspClient->getStreamClientState(); // alias
 
-    scs.streamTimerTask = NULL;
+    scs.streamTimerTask = nullptr;
 
     // Shut down the stream:
     shutdownStream(rtspClient);
@@ -262,21 +263,21 @@ void streamTimerHandler(void* clientData)
 
 void shutdownStream(RTSPClient* rtspClient)
 {
-    UsageEnvironment& env = rtspClient->envir(); // alias
+//    UsageEnvironment& env = rtspClient->envir(); // alias
     StreamClientState& scs = ((CustomRTSPClient*)rtspClient)->getStreamClientState(); // alias
 
     // First, check whether any subsessions have still to be closed:
-    if (scs.session != NULL) {
+    if (scs.session != nullptr) {
         Boolean someSubsessionsWereActive = False;
         MediaSubsessionIterator iter(*scs.session);
         MediaSubsession* subsession;
 
-        while ((subsession = iter.next()) != NULL) {
-            if (subsession->sink != NULL) {
+        while ((subsession = iter.next()) != nullptr) {
+            if (subsession->sink != nullptr) {
                 Medium::close(subsession->sink);
-                subsession->sink = NULL;
+                subsession->sink = nullptr;
 
-                if (subsession->rtcpInstance() != NULL) {
+                if (subsession->rtcpInstance() != nullptr) {
                     subsession->rtcpInstance()->setByeHandler(NULL, NULL); // in case the server sends a RTCP "BYE" while handling "TEARDOWN"
                 }
 
@@ -287,10 +288,12 @@ void shutdownStream(RTSPClient* rtspClient)
         if (someSubsessionsWereActive) {
             // Send a RTSP "TEARDOWN" command, to tell the server to shutdown the stream.
             // Don't bother handling the response to the "TEARDOWN".
-            rtspClient->sendTeardownCommand(*scs.session, NULL);
+            rtspClient->sendTeardownCommand(*scs.session, nullptr);
         }
     }
 
     std::cout << "Closing the stream.\n";
     Medium::close(rtspClient);
+
+    return;
 }

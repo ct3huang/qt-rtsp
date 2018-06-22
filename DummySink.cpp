@@ -22,10 +22,8 @@ DummySink* DummySink::createNew(RtspSession* session, UsageEnvironment& env, Med
     return new DummySink(session, env, subsession, streamId);
 }
 
-DummySink::DummySink(RtspSession* session,
-                     UsageEnvironment& env,
-                     MediaSubsession& subsession,
-                     char const* streamId)
+DummySink::DummySink(RtspSession* session, UsageEnvironment& env,
+                     MediaSubsession& subsession, char const* streamId)
 : MediaSink(env)
 , session(session)
 , fSubsession(subsession)
@@ -55,7 +53,7 @@ DummySink::DummySink(RtspSession* session,
     codecContext = avcodec_alloc_context3(codec);
     frame = av_frame_alloc();
     rgbFrame = av_frame_alloc();
-    avpicture_alloc(( AVPicture *)rgbFrame, AV_PIX_FMT_RGB24, 1920, 1080);
+    avpicture_alloc((AVPicture *)rgbFrame, AV_PIX_FMT_RGB24, 1920, 1080);
 
     // marked by canjian
 //    if (codec->capabilities & CODEC_CAP_TRUNCATED) {
@@ -96,10 +94,11 @@ void DummySink::afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes
         avpkt.size = frameSize + 4;
         memcpy (fReceiveBufferAV + 4, fReceiveBuffer, frameSize);
         avpkt.data = fReceiveBufferAV;
-        len = avcodec_decode_video2 (codecContext, frame, &got_picture, &avpkt);
+        len = avcodec_decode_video2(codecContext, frame, &got_picture, &avpkt);
         if (len < 0) {
             envir() << "Error while decoding frame " << frameIndex << "\n";
         }
+
         if (got_picture) {
             envir() << "->Picture decoded :" << frameIndex << "\n";
             sws_scale(this->swsContext, this->frame->data,this->frame->linesize,

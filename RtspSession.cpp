@@ -1,19 +1,21 @@
+#include <iostream>
+
 #include "RtspSession.h"
 #include "RtspClient.h"
 #include "RtspCallback.h"
 
-#include <iostream>
+
 
 #define RTSP_CLIENT_VERBOSITY_LEVEL 1
 
 
 RtspSession::RtspSession(int id, const char* progName, const char* url, QObject* parent)
-: _id(id)
+: QThread(parent)
+, _id(id)
 , _progName(progName)
 , _url(url)
-, _rtspClient(NULL)
+, _rtspClient(nullptr)
 , _eventLoopWatchVariable(0)
-, QThread(parent)
 {
 }
 
@@ -43,16 +45,16 @@ void RtspSession::run()
     env->taskScheduler().doEventLoop(&this->_eventLoopWatchVariable);
     std::cout << "Rtsp event finished" << std::endl;
     env->reclaim();
-    env = NULL;
+    env = nullptr;
     delete scheduler;
-    scheduler = NULL;
+    scheduler = nullptr;
 }
 
 bool RtspSession::openURL(UsageEnvironment &env, const char *progName, const char *url)
 {
     this->_rtspClient = CustomRTSPClient::createNew(this, env, url,
                                                     RTSP_CLIENT_VERBOSITY_LEVEL, progName);
-    if (this->_rtspClient == NULL) {
+    if (this->_rtspClient == nullptr) {
         std::cerr << "Failed to create a RTSP client for URL \""
                   << this->_url << "\": "
                   << env.getResultMsg() << "\n";

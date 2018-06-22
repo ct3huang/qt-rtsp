@@ -25,14 +25,12 @@ extern "C" {
 
 class DummySink: public MediaSink {
 public:
-    static DummySink* createNew(RtspSession *session,
-                                UsageEnvironment& env,
+    static DummySink* createNew(RtspSession *session, UsageEnvironment& env,
                                 MediaSubsession& subsession, // identifies the kind of data that's being received
                                 char const* streamId = nullptr); // identifies the stream itself (optional)
 
 private:
     DummySink(RtspSession *session, UsageEnvironment& env, MediaSubsession& subsession, char const* streamId);
-    // called only by "createNew()"
     virtual ~DummySink();
 
     static void afterGettingFrame(void* clientData, unsigned frameSize,

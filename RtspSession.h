@@ -20,11 +20,11 @@ protected:
     bool openURL(UsageEnvironment& env, const char* progName, const char * url);
     void run();
 private:
-    int _id;
+    int         _id;
     std::string _progName;
     std::string _url;
     RTSPClient* _rtspClient;
-    char _eventLoopWatchVariable;
+    char        _eventLoopWatchVariable;
 };
 
 #endif // RSTP_CLIENT_H
