@@ -6,6 +6,7 @@
 #include "DummySink.h"
 
 
+#define REQUEST_STREAMING_OVER_TCP False
 
 // A function that outputs a string that identifies each stream (for debugging output).  Modify this if you wish:
 UsageEnvironment& operator<<(UsageEnvironment& env, const RTSPClient& rtspClient)
@@ -174,10 +175,6 @@ void continueAfterPLAY(RTSPClient* rtspClient, int resultCode, char* resultStrin
     }
 }
 
-// By default, we request that the server stream its data using RTP/UDP.
-// If, instead, you want to request that the server stream via RTP-over-TCP, change the following to True:
-#define REQUEST_STREAMING_OVER_TCP False
-
 void setupNextSubsession(RTSPClient* rtspClient)
 {
     UsageEnvironment& env = rtspClient->envir(); // alias
@@ -257,8 +254,9 @@ void streamTimerHandler(void* clientData)
 
     scs.streamTimerTask = nullptr;
 
-    // Shut down the stream:
-    shutdownStream(rtspClient);
+    shutdownStream(rtspClient);  // Shut down the stream
+
+    return;
 }
 
 void shutdownStream(RTSPClient* rtspClient)
@@ -278,7 +276,7 @@ void shutdownStream(RTSPClient* rtspClient)
                 subsession->sink = nullptr;
 
                 if (subsession->rtcpInstance() != nullptr) {
-                    subsession->rtcpInstance()->setByeHandler(NULL, NULL); // in case the server sends a RTCP "BYE" while handling "TEARDOWN"
+                    subsession->rtcpInstance()->setByeHandler(nullptr, nullptr); // in case the server sends a RTCP "BYE" while handling "TEARDOWN"
                 }
 
                 someSubsessionsWereActive = True;

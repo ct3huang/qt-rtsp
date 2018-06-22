@@ -12,9 +12,6 @@ extern "C" {
 
 #include "DummySink.h"
 
-
-// Even though we're not going to be doing anything with the incoming data, we still need to receive it.
-// Define the size of the buffer that we'll use:
 #define DUMMY_SINK_RECEIVE_BUFFER_SIZE 100000
 
 DummySink* DummySink::createNew(RtspSession* session, UsageEnvironment& env, MediaSubsession& subsession, char const* streamId)
@@ -76,20 +73,21 @@ DummySink::DummySink(RtspSession* session, UsageEnvironment& env,
 DummySink::~DummySink()
 {
     delete[] fReceiveBuffer;
-    delete [] fReceiveBufferAV;
+    delete[] fReceiveBufferAV;
     delete[] fStreamId;
 }
 
 void DummySink::afterGettingFrame(void* clientData, unsigned frameSize, unsigned numTruncatedBytes,
-                                  struct timeval presentationTime, unsigned durationInMicroseconds) {
+                                  struct timeval presentationTime, unsigned durationInMicroseconds)
+{
     DummySink* sink = (DummySink*)clientData;
     sink->afterGettingFrame(frameSize, numTruncatedBytes, presentationTime, durationInMicroseconds);
 }
 
 void DummySink::afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes,
-                                  struct timeval presentationTime, unsigned /*durationInMicroseconds*/) {
-    // We've just received a frame of data.  (Optionally) print out information about it:
-    if (strcmp(fSubsession.codecName(),"H264") == 0) {
+                                  struct timeval presentationTime, unsigned /*durationInMicroseconds*/)
+{
+    if (strcmp(fSubsession.codecName(), "H264") == 0) {
         avpkt.data = fReceiveBufferAV;
         avpkt.size = frameSize + 4;
         memcpy (fReceiveBufferAV + 4, fReceiveBuffer, frameSize);
@@ -113,10 +111,13 @@ void DummySink::afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes
             emit this->session->gotFrame(*image);
             frameIndex ++;
         }
+    } else if (strcmp(fSubsession.codecName(), "pcmu") == 0) {
+
     }
 
-    // Then continue, to request the next frame of data:
-    continuePlaying();
+    continuePlaying(); // continue to request the next frame of data
+
+    return;
 }
 
 Boolean DummySink::continuePlaying()
