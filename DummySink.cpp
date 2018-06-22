@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <Qimage>
+#include <QImage>
 #include <QImageWriter>
 
 extern "C" {
@@ -12,9 +12,6 @@ extern "C" {
 
 #include "DummySink.h"
 
-
-
-// Implementation of "DummySink":
 
 // Even though we're not going to be doing anything with the incoming data, we still need to receive it.
 // Define the size of the buffer that we'll use:
@@ -31,8 +28,8 @@ DummySink::DummySink(RtspSession* session,
                      char const* streamId)
 : MediaSink(env)
 , session(session)
+, fSubsession(subsession)
 , frameIndex(0)
-, fSubsession(subsession) 
 {
     fStreamId = strDup(streamId);
     fReceiveBuffer = new u_int8_t[DUMMY_SINK_RECEIVE_BUFFER_SIZE];
@@ -58,7 +55,7 @@ DummySink::DummySink(RtspSession* session,
     codecContext = avcodec_alloc_context3(codec);
     frame = av_frame_alloc();
     rgbFrame = av_frame_alloc();
-    avpicture_alloc( ( AVPicture *) rgbFrame, AV_PIX_FMT_RGB24, 1920, 1080);
+    avpicture_alloc(( AVPicture *)rgbFrame, AV_PIX_FMT_RGB24, 1920, 1080);
 
     // marked by canjian
 //    if (codec->capabilities & CODEC_CAP_TRUNCATED) {
@@ -69,13 +66,13 @@ DummySink::DummySink(RtspSession* session,
     codecContext->height = 1080;
     codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
 
-    if (avcodec_open2(codecContext,codec,NULL) < 0) {
+    if (avcodec_open2(codecContext, codec, nullptr) < 0) {
         envir() << "could not open codec";
         exit(5);
     }
 
     this->swsContext = sws_getContext( codecContext->width, codecContext->height, codecContext->pix_fmt, 1920, 1080,
-                                       AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+                                       AV_PIX_FMT_RGB24, SWS_BICUBIC, nullptr, nullptr, nullptr);
 }
 
 DummySink::~DummySink()
@@ -125,8 +122,9 @@ void DummySink::afterGettingFrame(unsigned frameSize, unsigned numTruncatedBytes
 
 Boolean DummySink::continuePlaying()
 {
-    if (fSource == NULL)
+    if (fSource == nullptr) {
         return False; // sanity check (should not happen)
+    }
 
     // Request the next frame of data from our input source.  "afterGettingFrame()" will get called later, when it arrives:
     fSource->getNextFrame(fReceiveBuffer, DUMMY_SINK_RECEIVE_BUFFER_SIZE,
@@ -138,8 +136,8 @@ Boolean DummySink::continuePlaying()
 
 void DummySink::setSprop(u_int8_t const* prop, unsigned size)
 {
-    uint8_t *buf;
-    uint8_t *buf_start;
+    uint8_t *buf = nullptr;
+    uint8_t *buf_start = nullptr;
     buf = (uint8_t *)malloc(1000);
     buf_start = buf + 4;
 
@@ -153,10 +151,8 @@ void DummySink::setSprop(u_int8_t const* prop, unsigned size)
     len = avcodec_decode_video2(codecContext, frame, &got_picture, &avpkt);
     if (len < 0) {
         envir() << "Error while decoding frame" << frame;
-        //		exit(6);
     }
 
     envir() << "after setSprop\n";
-    //	exit (111);
 }
 

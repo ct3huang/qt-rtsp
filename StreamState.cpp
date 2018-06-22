@@ -3,10 +3,10 @@
 
 
 StreamClientState::StreamClientState()
-: iter(NULL)
-, session(NULL)
-, subsession(NULL)
-, streamTimerTask(NULL)
+: iter(nullptr)
+, session(nullptr)
+, subsession(nullptr)
+, streamTimerTask(nullptr)
 , duration(0.0)
 {
 }
@@ -15,7 +15,7 @@ StreamClientState::~StreamClientState()
 {
     delete iter;
 
-    if (session != NULL) {
+    if (session != nullptr) {
         // We also need to delete "session", and unschedule "streamTimerTask" (if set)
         UsageEnvironment& env = session->envir(); // alias
 

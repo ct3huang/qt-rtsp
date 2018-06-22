@@ -1,6 +1,6 @@
 #include "RtspClient.h"
 
-// Implementation of "ourRTSPClient":
+
 
 CustomRTSPClient* CustomRTSPClient::createNew(
         RtspSession *session,

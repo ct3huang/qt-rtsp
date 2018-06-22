@@ -28,7 +28,7 @@ public:
     static DummySink* createNew(RtspSession *session,
                                 UsageEnvironment& env,
                                 MediaSubsession& subsession, // identifies the kind of data that's being received
-                                char const* streamId = NULL); // identifies the stream itself (optional)
+                                char const* streamId = nullptr); // identifies the stream itself (optional)
 
 private:
     DummySink(RtspSession *session, UsageEnvironment& env, MediaSubsession& subsession, char const* streamId);
@@ -48,14 +48,13 @@ private:
 
 public:
     void setSprop(u_int8_t const* prop, unsigned size);
+
 private:
     RtspSession* session;
-private:
     u_int8_t* fReceiveBuffer;
     u_int8_t* fReceiveBufferAV;
     MediaSubsession& fSubsession;
     char* fStreamId;
-private:
     AVCodec *codec;
     AVCodecContext *codecContext;
     int frameIndex;

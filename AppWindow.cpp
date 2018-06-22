@@ -4,7 +4,8 @@
 
 
 //const char * url = "rtsp://192.168.3.99:37441/h264";
-const char * url = "rtsp://10.209.21.189:8554/txdx.mkv";
+//const char * url = "rtsp://10.209.21.189:8554/txdx.mkv";
+const char * url = "rtsp://192.168.8.107:8554/live";
 
 AppWindow::AppWindow(const char* progName, QWidget* parent)
 : QMainWindow(parent)

@@ -29,17 +29,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 unix {
-    INCLUDEPATH += /usr/local/include
-    INCLUDEPATH += /usr/local/include/liveMedia
-    INCLUDEPATH += /usr/local/include/groupsock
-    INCLUDEPATH += /usr/local/include/UsageEnvironment
-    INCLUDEPATH += /usr/local/include/BasicUsageEnvironment
-    LIBS += -L/usr/local/lib
-    LIBS += -lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment
-    LIBS += -lavcodec -lavformat -lavutil -lavfilter -lavdevice -lswscale -lswresample
-    LIBS += -liconv -lx264 -lbz2 -lz -lm
-    LIBS += -framework AudioToolbox -framework CoreMedia -framework AVFoundation -framework VideoToolbox -framework CoreVideo -framework CoreFoundation
-    LIBS += -framework Security -framework VideoDecodeAcceleration
+#    INCLUDEPATH += /usr/local/include
+#    INCLUDEPATH += /usr/local/include/liveMedia
+#    INCLUDEPATH += /usr/local/include/groupsock
+#    INCLUDEPATH += /usr/local/include/UsageEnvironment
+#    INCLUDEPATH += /usr/local/include/BasicUsageEnvironment
+#    LIBS += -L/usr/local/lib
+#    LIBS += -lliveMedia -lgroupsock -lBasicUsageEnvironment -lUsageEnvironment
+#    LIBS += -lavcodec -lavformat -lavutil -lavfilter -lavdevice -lswscale -lswresample
+#    LIBS += -liconv -lx264 -lbz2 -lz -lm
+#    LIBS += -framework AudioToolbox -framework CoreMedia -framework AVFoundation -framework VideoToolbox -framework CoreVideo -framework CoreFoundation
+#    LIBS += -framework Security -framework VideoDecodeAcceleration
+
+    INCLUDEPATH +=  $$PWD/prebuild/linux/live555/include/ \
+                    $$PWD/prebuild/linux/live555/include/liveMedia \
+                    $$PWD/prebuild/linux/live555/include/groupsock \
+                    $$PWD/prebuild/linux/live555/include/UsageEnvironment \
+                    $$PWD/prebuild/linux/live555/include/BasicUsageEnvironment
+
+    INCLUDEPATH += $$PWD/prebuild/linux/ffmpeg/include/
+
+    LIBS += -L$$PWD/prebuild/linux/ffmpeg/lib -lavformat -lavdevice -lavcodec -lavutil -lavfilter \
+                                         -lswscale -lswresample
+
+    LIBS += -L$$PWD/prebuild/linux/live555/lib -lliveMedia -lgroupsock \
+                                         -lBasicUsageEnvironment -lUsageEnvironment
+
+    LIBS += -lz
 }
 
 win32 {

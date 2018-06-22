@@ -10,7 +10,7 @@
 class RtspSession: public QThread {
     Q_OBJECT
 public:
-    explicit RtspSession(int id, const char* progName, const char* url, QObject *parent =NULL);
+    explicit RtspSession(int id, const char* progName, const char* url, QObject *parent = nullptr);
     virtual ~RtspSession();
 public:
     void stop();

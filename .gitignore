@@ -1,0 +1,2 @@
+*.user*
+prebuild/linux/ffmpeg/lib/

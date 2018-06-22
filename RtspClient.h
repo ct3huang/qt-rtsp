@@ -19,7 +19,7 @@ public:
             UsageEnvironment& env,
             char const* rtspURL,
             int verbosityLevel = 0,
-            char const* applicationName = NULL,
+            char const* applicationName = nullptr,
             portNumBits tunnelOverHTTPPortNum = 0);
 
 protected:
